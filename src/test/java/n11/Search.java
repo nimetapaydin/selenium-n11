@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.Test;
 
-public class HomePage {
+public class Search {
 
     @Test
 
@@ -22,15 +22,15 @@ public class HomePage {
         driver.manage().window().maximize();
 
         //class kullanarak elementi bulma
-        WebElement search = driver.findElement(By.className("desktopOldAutosuggestTheme-input"));
+        WebElement searchinput = driver.findElement(By.id("searchData"));
        //bulunan elemente tıklama
-        search.click();
+        searchinput.click();
         //bulunan alana text girmek
-        search.sendKeys("Buzdolabı");
-        search.click();
-        //arama yapma
-        WebElement ara = driver.findElement(By.xpath("//*[@class='SearchBoxOld-buttonContainer']"));
+        searchinput.sendKeys("Buzdolabı");
 
+        //arama yapma
+        WebElement search = driver.findElement(By.xpath("//*[@class='searchBtn']"));
+        search.click();
     }
 
 }
