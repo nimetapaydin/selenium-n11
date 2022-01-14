@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 
 public class AllStore {
@@ -20,7 +21,7 @@ public class AllStore {
 
     public static void main(String[] args) throws IOException {
         //Driver tanımlama ve driver'ın lokasyonunu verme
-        System.setProperty("webdriver.chrome.driver","C:\\Users\\nyzk\\Desktop\\n11\\selenium-n11\\drivers\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\nyzk\\Desktop\\n11\\selenium-n11\\drivers\\chromedriver.exe");
 
         WebDriver driver = (WebDriver) new ChromeDriver();
 
@@ -35,7 +36,7 @@ public class AllStore {
 
         //class kullanarak elementi bulma
         WebElement store = driver.findElement(By.xpath("//*[contains(@title, 'Mağazalar')]"));
-       //bulunan elemente tıklama
+        //bulunan elemente tıklama
         store.click();
 
         WebElement stores = driver.findElement(By.xpath("//*[contains(@class, 'hOpenMenuContent')]//*[contains(@title, 'Mağazaları Gör')]"));
@@ -44,75 +45,83 @@ public class AllStore {
         WebElement allstores = driver.findElement(By.xpath("//h3[contains (text(), 'Tüm Mağazalar')]"));
         allstores.click();
 
-        String textallstores = driver.findElement(By.xpath ("//h3[contains (text(),'Tüm Mağazalar')]")).getText ();
+        String textallstores = driver.findElement(By.xpath("//h3[contains (text(),'Tüm Mağazalar')]")).getText();
         System.out.println(textallstores);
 
+        By mySelector = By.xpath("//*[@id=\"contentSellerList\"]/div/div[2]/div/div[2]/div[4]/div[2]/ul");
+        List<WebElement> myElements = driver.findElements(mySelector);
 
-        XSSFWorkbook workbook=new XSSFWorkbook();
-        XSSFSheet sheet=workbook.createSheet("Store Info");
+        String storetext = null;
+        for (WebElement e : myElements) {
+            System.out.println(e.getText());
+            storetext = e.getText();
+            System.out.println(storetext);
+        }
 
-        Object storedata[][]= {	{"Store"},
-                {textallstores}
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Store Info");
+
+
+        Object storedata[][] = {{"Store"},
+                {"storetext"}
+
         };
 
         //Using for loop
-		/**/
-		int rows=storedata.length;
+        /**/
+        int rows = storedata.length;
 
-		int cols=storedata[0].length;
+        int cols = storedata[0].length;
 
-		System.out.println(rows); //4
-		System.out.println(cols); //3
+        System.out.println(rows); //4
+        System.out.println(cols); //3
 
-		for(int r=0;r<rows;r++)  //0
-		{
-			XSSFRow row=sheet.createRow(r);
+        for (int r = 0; r < rows; r++)  //0
+        {
+            XSSFRow row = sheet.createRow(r);
 
-			for(int c=0;c<cols;c++)
-			{
-				XSSFCell cell=row.createCell(c); //0
-				Object value=storedata[r][c];
+            for (int c = 0; c < cols; c++) {
+                XSSFCell cell = row.createCell(c); //0
+                Object value = storedata[r][c];
 
-				if(value instanceof String)
-					cell.setCellValue((String)value);
-				if(value instanceof Integer)
-					cell.setCellValue((Integer)value);
-				if(value instanceof Boolean)
-					cell.setCellValue((Boolean)value);
+                if (value instanceof String)
+                    cell.setCellValue((String) value);
+                if (value instanceof Integer)
+                    cell.setCellValue((Integer) value);
+                if (value instanceof Boolean)
+                    cell.setCellValue((Boolean) value);
 
-			}
-		}
-		//*/
+            }
+        }
+        //*/
 
         /// using for...each loop
-        int rowCount=0;
+        int rowCount = 0;
 
-        for(Object str[]:storedata)
-        {
-            XSSFRow row=sheet.createRow(rowCount++);
-            int columnCount=0;
-            for(Object value:str)
-            {
-                XSSFCell cell=row.createCell(columnCount++);
+        for (Object str[] : storedata) {
+            XSSFRow row = sheet.createRow(rowCount++);
+            int columnCount = 0;
+            for (Object value : str) {
+                XSSFCell cell = row.createCell(columnCount++);
 
-                if(value instanceof String)
-                    cell.setCellValue((String)value);
-                if(value instanceof Integer)
-                    cell.setCellValue((Integer)value);
-                if(value instanceof Boolean)
-                    cell.setCellValue((Boolean)value);
+                if (value instanceof String)
+                    cell.setCellValue((String) value);
+                if (value instanceof Integer)
+                    cell.setCellValue((Integer) value);
+                if (value instanceof Boolean)
+                    cell.setCellValue((Boolean) value);
 
             }
         }
 
 
-        String filePath=".\\datafiles\\store.xlsx";
-        FileOutputStream outstream=new FileOutputStream(filePath);
+        String filePath = ".\\datafiles\\store.xlsx";
+        FileOutputStream outstream = new FileOutputStream(filePath);
         workbook.write(outstream);
 
         outstream.close();
 
-        System.out.println("Employee.xls file written successfully...");
+        System.out.println("store.xls file written successfully...");
     }
 
 
