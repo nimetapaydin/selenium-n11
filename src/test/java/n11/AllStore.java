@@ -55,6 +55,7 @@ public class AllStore {
         for (WebElement e : myElements) {
             System.out.println(e.getText());
             storetext = e.getText();
+
             System.out.println(storetext);
         }
 
@@ -62,8 +63,8 @@ public class AllStore {
         XSSFSheet sheet = workbook.createSheet("Store Info");
 
 
-        Object storedata[][] = {{"Store"},
-                {"storetext"}
+        Object storedata[][] = {{"A","B","C","D","E","F","G","H","I","İ","J","K","L","M","N","O","Ö","P","R","S","Ş","T","U","Ü","X","V","W","Y","Z","1","2","3","4","5","6","7","8","9","0"},
+                                {textallstores}
 
         };
 
