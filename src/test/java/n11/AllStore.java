@@ -1,7 +1,5 @@
 package n11;
 
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
@@ -64,12 +62,12 @@ public class AllStore {
 
 
         Object storedata[][] = {{"A","B","C","D","E","F","G","H","I","İ","J","K","L","M","N","O","Ö","P","R","S","Ş","T","U","Ü","X","V","W","Y","Z","1","2","3","4","5","6","7","8","9","0"},
-                                {textallstores}
+                                {storetext}
 
         };
 
         //Using for loop
-        /**/
+
         int rows = storedata.length;
 
         int cols = storedata[0].length;
@@ -94,7 +92,10 @@ public class AllStore {
 
             }
         }
-        //*/
+        
+
+
+         /*
 
         /// using for...each loop
         int rowCount = 0;
@@ -116,6 +117,8 @@ public class AllStore {
         }
 
 
+
+          */
         String filePath = ".\\datafiles\\store.xlsx";
         FileOutputStream outstream = new FileOutputStream(filePath);
         workbook.write(outstream);
