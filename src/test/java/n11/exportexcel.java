@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AllStore {
+public class exportexcel {
 
     @Test
 
@@ -52,7 +52,7 @@ public class AllStore {
         By mySelector = By.xpath("//*[@id=\"contentSellerList\"]/div/div[2]/div/div[2]/div[4]/div[2]/ul");
         List<WebElement> myElements = driver.findElements(mySelector);
 
-
+        List<String> sdata = new ArrayList();
 
         String storetext = null;
         for (WebElement e : myElements) {
@@ -60,6 +60,7 @@ public class AllStore {
             storetext = e.getText();
 
             System.out.println(storetext);
+            sdata.add(storetext);
         }
 
         XSSFWorkbook workbook = new XSSFWorkbook();
@@ -72,6 +73,27 @@ public class AllStore {
         };
 
 
+        int rows = sdata.size();
+
+        int cols = 29; // harf gelirse
+        int cols = 1;
+
+        System.out.println(rows); //4
+        System.out.println(cols); //3
+
+        for (int r = 0; r < rows; r++)  //0
+        {
+            XSSFRow row = sheet.createRow(r);
+
+            for (int c = 0; c < cols; c++) {
+                XSSFCell cell = row.createCell(c); //0
+                String value = sdata.get(r);
+
+                cell.setCellValue(value);
+            }
+        }
+
+        /*
         /// using for...each loop
         int rowCount = 0;
 
@@ -92,6 +114,8 @@ public class AllStore {
         }
 
 
+
+         */
         String filePath = ".\\datafiles\\store.xlsx";
         FileOutputStream outstream = new FileOutputStream(filePath);
         workbook.write(outstream);
