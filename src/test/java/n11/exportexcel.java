@@ -1,20 +1,26 @@
 package n11;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.testng.annotations.Test;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 public class exportexcel {
 
@@ -22,7 +28,10 @@ public class exportexcel {
 
     public static void main(String[] args) throws IOException {
         //Driver tanımlama ve driver'ın lokasyonunu verme
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\nyzk\\Desktop\\n11\\selenium-n11\\drivers\\chromedriver.exe");
+
+
+
+        WebDriverManager.chromedriver().setup();
 
         WebDriver driver = (WebDriver) new ChromeDriver();
 
@@ -49,73 +58,72 @@ public class exportexcel {
         String textallstores = driver.findElement(By.xpath("//h3[contains (text(),'Tüm Mağazalar')]")).getText();
         System.out.println(textallstores);
 
-        By mySelector = By.xpath("//*[@id=\"contentSellerList\"]/div/div[2]/div/div[2]/div[4]/div[2]/ul");
-        List<WebElement> myElements = driver.findElements(mySelector);
-
-        List<String> sdata = new ArrayList();
-
-        String storetext = null;
-        for (WebElement e : myElements) {
-            System.out.println(e.getText());
-            storetext = e.getText();
-
-            System.out.println(storetext);
-            sdata.add(storetext);
-        }
-
+        String[] alphabet = new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "I", "İ", "J", "K", "L", "M", "N", "O", "Ö", "P", "R", "S", "Ş", "T", "U", "Ü", "X", "V", "W", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
+        Map<String, List<String>> dataMap = new HashMap<>();
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Store Info");
 
+        for (String letter : alphabet) {
+            WebElement letterElement = driver.findElement(By.cssSelector("[data-has-seller=\"" + letter + "\"]"));
+            letterElement.click();
 
-        Object storedata[][] = {{"A","B","C","D","E","F","G","H","I","İ","J","K","L","M","N","O","Ö","P","R","S","Ş","T","U","Ü","X","V","W","Y","Z","1","2","3","4","5","6","7","8","9","0"},
-                                {storetext}
+            // verilerin yüklenmesi için.
+            // sonraki harfin değerlerini getirmeden önce yüklenmiş mi onu kontrol ediyor
+            // .infoText > i yüklenince değişen yer
+            FluentWait wait = new FluentWait(driver)
+                    .withTimeout(Duration.ofSeconds(10))
+                    .pollingEvery(Duration.ofSeconds(1))
+                    .ignoring(NoSuchElementException.class);
 
-        };
+            WebElement letterResElem = driver.findElement(By.cssSelector(".infoText > i"));
+            wait.until(ExpectedConditions.textToBePresentInElement(letterResElem, "\"" + letter + "\""));
 
+            System.out.println("find :" + letter + " element");
 
-        int rows = sdata.size();
+            By mySelector = By.cssSelector(".allSellers .sellerListHolder > ul > li > a");
+            List<WebElement> myElements = driver.findElements(mySelector);
 
-        int cols = 29; // harf gelirse
-        int cols = 1;
+            System.out.println(letter + " letter data size: " + myElements.size());
 
-        System.out.println(rows); //4
-        System.out.println(cols); //3
+            List<String> sdata = new ArrayList<>();
 
-        for (int r = 0; r < rows; r++)  //0
-        {
-            XSSFRow row = sheet.createRow(r);
+            String storetext;
+            int count = 0;
+            for (WebElement e : myElements) {
+                storetext = e.getText();
 
-            for (int c = 0; c < cols; c++) {
-                XSSFCell cell = row.createCell(c); //0
-                String value = sdata.get(r);
+                sdata.add(storetext);
 
-                cell.setCellValue(value);
+                // hızlıca test etmek için yapıldı
+                // onar onar getiriyor
+                // if (count++ > 10) {
+                //     break;
+                // }
+            }
+
+            dataMap.put(letter, sdata);
+
+            System.out.println(letter + " find ended");
+        }
+
+        List<XSSFRow> rows = new ArrayList<>();
+
+        for (int i = 0; i < alphabet.length; i++) {
+            List<String> letterData = dataMap.get(alphabet[i]);
+
+            for (int j = 0; j < letterData.size(); j++) {
+                if (rows.size() <= j)
+                    rows.add(sheet.createRow(j));
+                XSSFRow row = rows.get(j);
+
+                if (row.getCell(i) == null)
+                    row.createCell(i);
+                XSSFCell cell = row.getCell(i);
+
+                cell.setCellValue(letterData.get(j));
             }
         }
 
-        /*
-        /// using for...each loop
-        int rowCount = 0;
-
-        for (Object str[] : storedata) {
-            XSSFRow row = sheet.createRow(rowCount++);
-            int columnCount = 0;
-            for (Object value : str) {
-                XSSFCell cell = row.createCell(columnCount++);
-
-                if (value instanceof String)
-                    cell.setCellValue((String) value);
-                if (value instanceof Integer)
-                    cell.setCellValue((Integer) value);
-                if (value instanceof Boolean)
-                    cell.setCellValue((Boolean) value);
-
-            }
-        }
-
-
-
-         */
         String filePath = ".\\datafiles\\store.xlsx";
         FileOutputStream outstream = new FileOutputStream(filePath);
         workbook.write(outstream);
