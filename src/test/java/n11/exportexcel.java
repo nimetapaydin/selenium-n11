@@ -58,7 +58,9 @@ public class exportexcel {
         String textallstores = driver.findElement(By.xpath("//h3[contains (text(),'Tüm Mağazalar')]")).getText();
         System.out.println(textallstores);
 
-        String[] alphabet = new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "I", "İ", "J", "K", "L", "M", "N", "O", "Ö", "P", "R", "S", "Ş", "T", "U", "Ü", "X", "V", "W", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
+        String[] alphabet = new String[] {"A", "B", "C", "Ç", "D", "E", "F", "G", "H", "I", "İ", "J", "K", "L", "M", "N", "O", "Ö", "P", "R", "S", "Ş", "T", "U", "Ü", "X", "V", "W", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
+
+
         Map<String, List<String>> dataMap = new HashMap<>();
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Store Info");
@@ -96,8 +98,8 @@ public class exportexcel {
 
                 // hızlıca test etmek için yapıldı
                 // onar onar getiriyor
-                // if (count++ > 10) {
-                //     break;
+                // if (count++ > 1) {
+                //   break;
                 // }
             }
 
