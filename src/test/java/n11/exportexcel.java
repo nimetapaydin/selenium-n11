@@ -17,10 +17,7 @@ import org.testng.annotations.Test;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class exportexcel {
 
@@ -28,9 +25,6 @@ public class exportexcel {
 
     public static void main(String[] args) throws IOException {
         //Driver tanımlama ve driver'ın lokasyonunu verme
-
-
-
         WebDriverManager.chromedriver().setup();
 
         WebDriver driver = (WebDriver) new ChromeDriver();
@@ -58,9 +52,8 @@ public class exportexcel {
         String textallstores = driver.findElement(By.xpath("//h3[contains (text(),'Tüm Mağazalar')]")).getText();
         System.out.println(textallstores);
 
-        String[] alphabet = new String[] {"A", "B", "C", "Ç", "D", "E", "F", "G", "H", "I", "İ", "J", "K", "L", "M", "N", "O", "Ö", "P", "R", "S", "Ş", "T", "U", "Ü", "X", "V", "W", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
-
-
+        String[] alphabet = new String[] {"A"};
+//        String[] alphabet = new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "I", "İ", "J", "K", "L", "M", "N", "O", "Ö", "P", "R", "S", "Ş", "T", "U", "Ü", "X", "V", "W", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
         Map<String, List<String>> dataMap = new HashMap<>();
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Store Info");
@@ -82,26 +75,11 @@ public class exportexcel {
 
             System.out.println("find :" + letter + " element");
 
-            By mySelector = By.cssSelector(".allSellers .sellerListHolder > ul > li > a");
-            List<WebElement> myElements = driver.findElements(mySelector);
+            By mySelector = By.cssSelector(".allSellers .sellerListHolder > ul");
+            WebElement brandUL = driver.findElement(mySelector);
+            List<String> sdata = Arrays.asList(brandUL.getText().split("\n"));
 
-            System.out.println(letter + " letter data size: " + myElements.size());
-
-            List<String> sdata = new ArrayList<>();
-
-            String storetext;
-            int count = 0;
-            for (WebElement e : myElements) {
-                storetext = e.getText();
-
-                sdata.add(storetext);
-
-                // hızlıca test etmek için yapıldı
-                // onar onar getiriyor
-                // if (count++ > 1) {
-                //   break;
-                // }
-            }
+            System.out.println(letter + " letter data size: " + sdata.size());
 
             dataMap.put(letter, sdata);
 
@@ -131,6 +109,19 @@ public class exportexcel {
         workbook.write(outstream);
 
         outstream.close();
+
+        By mySelector = By.cssSelector(".tabPanel .sellerListHolder > ul");
+        WebElement brandUL = driver.findElement(mySelector);
+        List<String> sdata = Arrays.asList(brandUL.getText().split("\n"));
+        int randomStoreIndex = 0;
+        WebElement randomStore =  driver.findElement(By.cssSelector("[title=\"" + sdata.get(randomStoreIndex) + "\"]"));
+        randomStore.click();
+
+        // burada yorum sayısınıa bak
+
+
+
+        driver.close();
 
         System.out.println("store.xls file written successfully...");
     }
