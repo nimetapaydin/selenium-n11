@@ -42,10 +42,18 @@ public class Search {
 
         Actions action = new Actions(driver);
 
-        WebElement third = driver.findElement(By.xpath("//*[@id=\"view\"]/ul/li[3]"));
-        //third.click();
+        WebElement third = driver.findElement(By.cssSelector("#view > ul > li:nth-child(3) #p-492340375 > div.pro > a"));
+        third.click();
         action.doubleClick(third).perform();
 
+        WebElement plus = driver.findElement(By.cssSelector("#unf-p-id > div > div.unf-p-cvr > div.unf-p-left.proDetailArea > div.unf-p-lBox > div.unf-p-detail > div.unf-buy-button-group.button-group-cover > div.button-group > div.pDetail-spinner > div > div > span.spinnerUp.spinnerArrow"));
+        plus.click();
+        action.doubleClick(plus).perform();
+
+        WebElement addbasket = driver.findElement(By.xpath("//*[@class=\"btn btnGrey addBasketUnify\" and text()=\"Sepete Ekle\"]"));
+        addbasket.click();
+
     }
+
 
 }
