@@ -63,8 +63,12 @@ public class Search {
         WebElement addbasket = driver.findElement(By.xpath("//*[@class=\"btn btnGrey addBasketUnify\" and text()=\"Sepete Ekle\"]"));
         addbasket.click();
 
-        WebElement gobasket = driver.findElement(By.xpath("//*[@class=\"btn btnBlack btnGoBasket\" and text()=\"Sepete Git\"]"));
+        WebElement gobasket = driver.findElement(By.cssSelector(".myBasketHolder > .myBasket"));
         gobasket.click();
+
+        WebElement ok = driver.findElement(By.xpath("//*[text()=\"Tamam\"]"));
+        ok.click();
+
 
     }
 
