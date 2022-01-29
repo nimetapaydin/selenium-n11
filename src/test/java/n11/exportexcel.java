@@ -5,11 +5,14 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.checkerframework.checker.units.qual.C;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -29,8 +32,12 @@ public class exportexcel {
         //Driver tanımlama ve driver'ın lokasyonunu verme
         // WebDriverManager.chromedriver().setup();
 
-        WebDriver driver = WebDriverManager.chromedriver().remoteAddress("http://localhost:4444/wd/hub").create();
+        // WebDriver driver = WebDriverManager.chromedriver().remoteAddress("http://localhost:4444").create();
         // WebDriver driver = (WebDriver) new ChromeDriver();
+
+        ChromeOptions chromeOptions = new ChromeOptions();
+        FirefoxOptions firefoxOptions = new FirefoxOptions();
+        RemoteWebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444"), firefoxOptions);
 
         driver.get("https://www.n11.com/");
 
@@ -119,8 +126,8 @@ public class exportexcel {
         WebElement randomStore = driver.findElement(By.cssSelector("[title=\"" + sdata.get(randomStoreIndex) + "\"]"));
         randomStore.click();
 
-        // burada yorum sayısınıa bak
-        // <3
+        // burada yorum sayısına bak
+
 
         WebElement storeCommentButton = driver.findElement(By.cssSelector("[title=\"Mağaza Yorumları\"]"));
         storeCommentButton.click();
