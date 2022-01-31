@@ -1,5 +1,6 @@
 package n11;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
@@ -15,7 +16,9 @@ public class Search {
 
     public static void main(String[] args){
         //Driver tanımlama ve driver'ın lokasyonunu verme
-        System.setProperty("webdriver.chrome.driver","C:\\Users\\nyzk\\Desktop\\n11\\selenium-n11\\drivers\\chromedriver.exe");
+        //System.setProperty("webdriver.chrome.driver","C:\\Users\\nyzk\\Desktop\\n11\\selenium-n11\\drivers\\chromedriver.exe");
+
+        WebDriverManager.chromedriver().setup();
 
         WebDriver driver = (WebDriver) new ChromeDriver();
 
