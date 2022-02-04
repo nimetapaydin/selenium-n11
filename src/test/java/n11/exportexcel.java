@@ -12,7 +12,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -21,13 +23,13 @@ import org.testng.annotations.Test;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.rmi.server.ExportException;
 import java.time.Duration;
 import java.util.*;
 
 public class exportexcel {
 
     @Test
-
     public static void main(String[] args) throws IOException {
         //Driver tanımlama ve driver'ın lokasyonunu verme
         // WebDriverManager.chromedriver().setup();
@@ -35,10 +37,47 @@ public class exportexcel {
         // WebDriver driver = WebDriverManager.chromedriver().remoteAddress("http://localhost:4444").create();
         // WebDriver driver = (WebDriver) new ChromeDriver();
 
-        ChromeOptions chromeOptions = new ChromeOptions();
-        FirefoxOptions firefoxOptions = new FirefoxOptions();
-        RemoteWebDriver driver = new RemoteWebDriver(new URL("http://localhost:4444"), firefoxOptions);
+//        // Testler parallel şekilde çalıştırılsın
+//        new Thread(() -> {
+//            try {
+//                ChromeOptions chromeOptions = new ChromeOptions();
+//                RemoteWebDriver chromeDriver = new RemoteWebDriver(new URL("http://127.0.0.1:4444"), chromeOptions);
+//                runTest(chromeDriver);
+//            } catch (Exception e) {
+//                System.err.println("Chrome testi başarısız" + e.getMessage());
+//            }
+//        });
+//
+//        // Testler parallel şekilde çalıştırılsın
+//        new Thread(() -> {
+//            try {
+//                FirefoxOptions firefoxOptions = new FirefoxOptions();
+//                RemoteWebDriver firefoxDriver = new RemoteWebDriver(new URL("http://127.0.0.1:4444"), firefoxOptions);
+//                runTest(firefoxDriver);
+//            } catch (Exception e) {
+//                System.err.println("Firefox testi başarısız" + e.getMessage());
+//            }
+//        });
 
+        // Testler parallel şekilde çalıştırılsın
+//        new Thread(() -> {
+            try {
+                EdgeOptions edgeOptions = new EdgeOptions();
+                // edgeOptions.setCapability(CapabilityType.PROXY, ZAP.getProxyConfiguration());
+                edgeOptions.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+                edgeOptions.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
+                edgeOptions.addArguments("--disable-dev-shm-usage");
+                edgeOptions.addArguments("--remote-debugging-port=0");
+                RemoteWebDriver edgeDriver = new RemoteWebDriver(new URL("http://127.0.0.1:4444"), edgeOptions);
+
+                runTest(edgeDriver);
+            } catch (Exception e) {
+                System.err.println("Edge testi başarısız" + e.getMessage());
+            }
+//        });
+    }
+
+    public static void runTest(RemoteWebDriver driver) throws IOException {
         driver.get("https://www.n11.com/");
 
         //driver'ın tam pencere açılmasını sağlar
@@ -62,7 +101,8 @@ public class exportexcel {
         String textallstores = driver.findElement(By.xpath("//h3[contains (text(),'Tüm Mağazalar')]")).getText();
         System.out.println(textallstores);
 
-        String[] alphabet = new String[]{"A", "B", "C", "Ç", "D", "E", "F", "G", "H", "I", "İ", "J", "K", "L", "M", "N", "O", "Ö", "P", "R", "S", "Ş", "T", "U", "Ü", "X", "V", "W", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
+        String[] alphabet = new String[]{"A", "B", "C", "Ç"};
+        //String[] alphabet = new String[]{"A", "B", "C", "Ç", "D", "E", "F", "G", "H", "I", "İ", "J", "K", "L", "M", "N", "O", "Ö", "P", "R", "S", "Ş", "T", "U", "Ü", "X", "V", "W", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
         Map<String, List<String>> dataMap = new HashMap<>();
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Store Info");
@@ -132,13 +172,19 @@ public class exportexcel {
         WebElement storeCommentButton = driver.findElement(By.cssSelector("[title=\"Mağaza Yorumları\"]"));
         storeCommentButton.click();
 
-        WebElement storeCommentCount = driver.findElement(By.cssSelector(".feedbackContent .selectedReview"));
-        String storeComment = storeCommentCount.getText();
-        String[] comment = storeComment.split(" ");
-        int feedback = Integer.parseInt(comment[0]);
-        int commentCount = Integer.parseInt(comment[2]);
+        try {
+            WebElement storeCommentCount = driver.findElement(By.cssSelector(".feedbackContent .selectedReview"));
+            String storeComment = storeCommentCount.getText();
+            String[] comment = storeComment.split(" ");
+            int feedback = Integer.parseInt(comment[0]);
+            int commentCount = Integer.parseInt(comment[2]);
 
-        System.out.println("Bu mağazaya " + feedback + " kadar değerlendirme ve " + commentCount + " kadar yorum yapılmıştır");
+            System.out.println("Bu mağazaya " + feedback + " kadar değerlendirme ve " + commentCount + " kadar yorum yapılmıştır");
+
+        }
+        catch(NoSuchElementException e) {
+            System.out.println("Bu mağazaya yorum yapılmamıştır");
+        }
 
         driver.close();
 
